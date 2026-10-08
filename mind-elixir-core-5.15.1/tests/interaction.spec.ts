@@ -1,0 +1,117 @@
+import { test, expect } from './mind-elixir-test'
+
+const modifier = process.platform === 'darwin' ? 'Meta' : 'Control'
+
+const id = 'root-id'
+const topic = 'root-topic'
+const childTopic = 'child-topic'
+const data = {
+  nodeData: {
+    topic,
+    id,
+    children: [
+      {
+        id: 'middle',
+        topic: 'middle',
+        children: [
+          {
+            id: 'child',
+            topic: childTopic,
+          },
+        ],
+      },
+    ],
+  },
+}
+
+test.beforeEach(async ({ me }) => {
+  await me.init(data)
+})
+
+test('Edit Node', async ({ page, me }) => {
+  await me.dblclick(topic)
+  await expect(page.locator('#input-box')).toBeVisible()
+  await page.keyboard.insertText('update node')
+  await page.keyboard.press('Enter')
+  await expect(page.locator('#input-box')).toBeHidden()
+  await expect(page.getByText('update node')).toBeVisible()
+  await me.toHaveScreenshot()
+})
+
+test('Clear and reset', async ({ page, me }) => {
+  await me.dblclick(topic)
+  await expect(page.locator('#input-box')).toBeVisible()
+  await page.keyboard.press('Backspace')
+  await page.keyboard.press('Enter')
+  await expect(page.locator('#input-box')).toBeHidden()
+  await expect(page.getByText(topic)).toBeVisible()
+  await me.toHaveScreenshot()
+})
+
+test('ESC cancels edit and discards changes', async ({ page, me }) => {
+  await me.dblclick(topic)
+  await expect(page.locator('#input-box')).toBeVisible()
+  await page.keyboard.insertText('changes to discard')
+  await page.keyboard.press('Escape')
+  await expect(page.locator('#input-box')).toBeHidden()
+  // Original topic text is preserved
+  await expect(page.getByText(topic)).toBeVisible()
+  // Node should remain selected
+  await expect(page.locator('.selected')).toHaveText(topic)
+})
+
+test('Remove Node', async ({ page, me }) => {
+  await me.click(childTopic)
+  await page.keyboard.press('Delete')
+  await expect(page.getByText(childTopic)).toBeHidden()
+  await me.toHaveScreenshot()
+})
+
+test('Add Sibling', async ({ page, me }) => {
+  await me.click(childTopic)
+  await page.keyboard.press('Enter')
+  await page.keyboard.press('Enter')
+  await expect(page.locator('#input-box')).toBeHidden()
+  await expect(page.getByText('New Node')).toBeVisible()
+  await me.toHaveScreenshot()
+})
+
+test('Add Before', async ({ page, me }) => {
+  await me.click(childTopic)
+  await page.keyboard.press('Shift+Enter')
+  await page.keyboard.press('Enter')
+  await expect(page.locator('#input-box')).toBeHidden()
+  await expect(page.getByText('New Node')).toBeVisible()
+  await me.toHaveScreenshot()
+})
+
+test('Add Parent', async ({ page, me }) => {
+  await me.click(childTopic)
+  await page.keyboard.press(`${modifier}+Enter`)
+  await page.keyboard.insertText('new node')
+  await page.keyboard.press('Enter')
+  await expect(page.locator('#input-box')).toBeHidden()
+  await expect(page.getByText('new node')).toBeVisible()
+  await me.toHaveScreenshot()
+})
+
+test('Add Child', async ({ page, me }) => {
+  await me.click(childTopic)
+  await page.keyboard.press('Tab')
+  await page.keyboard.insertText('new node')
+  await page.keyboard.press('Enter')
+  await expect(page.locator('#input-box')).toBeHidden()
+  await expect(page.getByText('new node')).toBeVisible()
+  await me.toHaveScreenshot()
+})
+
+test('Copy and Paste', async ({ page, me }) => {
+  await me.click('middle')
+  await page.keyboard.press(`${modifier}+c`)
+  await me.click('child-topic')
+  await page.keyboard.press(`${modifier}+v`)
+  // I guess Playwright will auto-scroll before taking screenshots
+  // After changing the scrolling solution to transform, we can't get complete me-nodes screenshot through scrolling
+  // This is indeed a very quirky "feature"
+  await me.toHaveScreenshot(page.locator('.map-container'))
+})

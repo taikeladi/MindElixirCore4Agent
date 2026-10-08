@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>思维导图 · 个人工作台</title>
+</head>
+
+<body>
+  <header class="app-header">
+    <div class="brand" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none"><path d="M9 16h6m0 0V7h8m-8 9v9h8" stroke="currentColor" stroke-width="2"/><circle cx="6" cy="16" r="3" fill="currentColor"/><circle cx="25" cy="7" r="3" fill="currentColor"/><circle cx="25" cy="25" r="3" fill="currentColor"/></svg></div>
+    <div class="document-heading"><span class="eyebrow">个人思维导图</span><h1 id="document-title">正在打开…</h1></div>
+    <span id="save-status" class="status" role="status" aria-live="polite">连接本地服务</span>
+    <nav aria-label="导图工具">
+      <button id="undo" title="撤销上一次提交 Ctrl+Z" disabled>↶ <span>撤销</span></button>
+      <button id="redo" title="重做 Ctrl+Shift+Z" disabled>↷ <span>重做</span></button>
+      <span class="divider"></span><button id="import">导入</button><button id="export">导出</button>
+      <button id="details-toggle" aria-expanded="false">备注与来源</button><button id="connection" class="accent">AI 接入</button>
+    </nav>
+  </header>
+  <div id="notice" class="notice" role="alert" hidden><span id="notice-text"></span><button id="retry" hidden>重试保存</button><button id="draft-export" hidden>导出本地草稿</button><button id="reload-latest" hidden>载入最新版本</button><button id="restore-draft" hidden>恢复草稿</button></div>
+  <main id="map" aria-label="思维导图编辑区"></main>
+  <aside id="details" hidden aria-label="节点备注与来源">
+    <div class="panel-heading"><h2>节点详情</h2><button id="details-close" aria-label="关闭节点详情">×</button></div>
+    <p id="selection-hint">选择一个节点，查看备注和文档来源。</p>
+    <form id="details-form" hidden>
+      <label>标题<input id="node-topic" required maxlength="10000" /></label>
+      <label>备注<textarea id="node-note" rows="5" placeholder="解释、补充信息或较长的内容"></textarea></label>
+      <label>内容性质<select id="node-kind"><option value="">未标记</option><option value="fact">文档事实</option><option value="summary">整理归纳</option><option value="inference">待确认推断</option></select></label>
+      <label>来源文档<input id="source-document" placeholder="文档名或网址" /></label>
+      <div class="field-row"><label>章节<input id="source-section" /></label><label>页码<input id="source-page" /></label></div>
+      <label>引用片段<textarea id="source-quote" rows="3"></textarea></label>
+      <p id="more-sources" class="muted"></p><button class="accent" type="submit">保存节点详情</button>
+      <p class="muted">节点 ID：<code id="node-id"></code></p>
+    </form>
+  </aside>
+  <footer><span class="shortcuts"><kbd>Tab</kbd> 子节点 <kbd>Enter</kbd> 同级节点 <span>双击编辑 · 拖动调整层级</span></span><span id="map-info">本地文件自动保存</span><button id="center">适应画布</button></footer>
+  <input type="file" id="import-file" accept="application/json,.json" hidden />
+  <dialog id="import-dialog"><h2>导入导图</h2><p id="import-description"></p><p class="muted">导入后替换当前导图，可整体撤销。已有节点 ID、备注和来源会保留。</p><div class="dialog-actions"><button id="import-cancel">取消</button><button id="import-confirm" class="accent">替换当前导图</button></div></dialog>
+  <dialog id="connection-dialog"><div class="panel-heading"><h2>让 AI 直接编辑导图</h2><button id="connection-close" aria-label="关闭 AI 接入">×</button></div><h3>Codex · 本地连接</h3><p>在这个项目的 Codex 对话中提供文档，然后说：</p><blockquote>读完这份文档，整理到当前思维导图，并为重要节点保留来源。</blockquote><p class="muted">项目内的 AGENTS.md 已记录读取和修改命令。AI 的修改会自动显示在这里。</p><h3>DeepSeek V4 · 可配置</h3><p>配置本机 <code>.env.local</code> 中的 API 密钥后，使用 <code>npm run deepseek -- --document 文档.md --prompt "整理到导图"</code>。</p><p class="muted">仅运行该命令时，才会将指定文档和当前导图发送给 DeepSeek。接入步骤见 PERSONAL_README.zh-CN.md。界面连接正常不代表模型连接已验证。</p><hr /><p class="muted">导图保存在项目的 <code>.mindmap/document.json</code>。关闭页面后仍会保留；关闭服务后需重新启动才能继续保存。</p></dialog>
+  <script type="module" src="/src/editor.ts"></script>
+</body>
+
+</html>

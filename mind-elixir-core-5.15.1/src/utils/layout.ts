@@ -1,0 +1,97 @@
+import { LEFT, RIGHT, SIDE, DOWN } from '../const'
+import type { Children } from '../types/dom'
+import { DirectionClass, type MindElixirInstance, type NodeObj } from '../types/index'
+import { shapeTpc } from './dom'
+
+// Set main nodes' direction and invoke layoutChildren()
+export const layout = function (this: MindElixirInstance) {
+  console.time('layout')
+  this.nodes.innerHTML = ''
+  // toggle the top-down layout class on the container
+  this.nodes.className = this.direction === DOWN ? 'down' : ''
+
+  const tpc = this.createTopic(this.nodeData)
+  shapeTpc.call(this, tpc, this.nodeData) // shape root tpc
+  tpc.draggable = false
+  const root = document.createElement('me-root')
+  root.appendChild(tpc)
+
+  const mainNodes = this.nodeData.children || []
+  if (this.direction === SIDE) {
+    // initiate direction of main nodes
+    let lcount = 0
+    let rcount = 0
+    mainNodes.map(node => {
+      if (node.direction === LEFT) {
+        lcount += 1
+      } else if (node.direction === RIGHT) {
+        rcount += 1
+      } else {
+        if (lcount <= rcount) {
+          node.direction = LEFT
+          lcount += 1
+        } else {
+          node.direction = RIGHT
+          rcount += 1
+        }
+      }
+    })
+  }
+  layoutMainNode(this, mainNodes, root)
+  console.timeEnd('layout')
+}
+
+const layoutMainNode = function (mei: MindElixirInstance, data: NodeObj[], root: HTMLElement) {
+  // Top-down layout: root on top, all main nodes in a single container below
+  if (mei.direction === DOWN) {
+    const downPart = document.createElement('me-main')
+    downPart.className = DirectionClass.DOWN
+    for (let i = 0; i < data.length; i++) {
+      const { grp: w } = mei.createWrapper(data[i])
+      downPart.appendChild(w)
+    }
+    mei.nodes.appendChild(root)
+    mei.nodes.appendChild(downPart)
+
+    mei.nodes.appendChild(mei.lines)
+    mei.nodes.appendChild(mei.labelContainer)
+    return
+  }
+
+  const leftPart = document.createElement('me-main')
+  leftPart.className = DirectionClass.LHS
+  const rightPart = document.createElement('me-main')
+  rightPart.className = DirectionClass.RHS
+  for (let i = 0; i < data.length; i++) {
+    const nodeObj = data[i]
+    const { grp: w } = mei.createWrapper(nodeObj)
+    if (mei.direction === SIDE) {
+      if (nodeObj.direction === LEFT) {
+        leftPart.appendChild(w)
+      } else {
+        rightPart.appendChild(w)
+      }
+    } else if (mei.direction === LEFT) {
+      leftPart.appendChild(w)
+    } else {
+      rightPart.appendChild(w)
+    }
+  }
+
+  mei.nodes.appendChild(leftPart)
+  mei.nodes.appendChild(root)
+  mei.nodes.appendChild(rightPart)
+
+  mei.nodes.appendChild(mei.lines)
+  mei.nodes.appendChild(mei.labelContainer)
+}
+
+export const layoutChildren = function (mei: MindElixirInstance, data: NodeObj[]) {
+  const chldr = document.createElement('me-children') as Children
+  for (let i = 0; i < data.length; i++) {
+    const nodeObj = data[i]
+    const { grp } = mei.createWrapper(nodeObj)
+    chldr.appendChild(grp)
+  }
+  return chldr
+}

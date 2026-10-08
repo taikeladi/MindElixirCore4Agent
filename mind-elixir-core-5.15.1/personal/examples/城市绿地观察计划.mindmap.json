@@ -1,0 +1,33 @@
+{
+  "nodeData": {
+    "id": "example-root", "topic": "城市绿地观察计划",
+    "note": "虚构示例，用于验证文档阅读、AI 建图、人工修改和来源保留。",
+    "metadata": {"kind":"summary","sources":[{"document":"城市绿地观察计划.md","section":"全文","quote":"这是用于验证思维导图流程的虚构材料"}]},
+    "children": [
+      {"id":"example-goals","topic":"观察目标","metadata":{"kind":"fact","sources":[{"document":"城市绿地观察计划.md","section":"1. 目标","quote":"重点观察活动类型、设施使用和不便之处"}]},"children":[
+        {"id":"example-activities","topic":"活动与设施使用"},
+        {"id":"example-boundary","topic":"先描述，不泛化","note":"少量观察不能直接代表全体居民的偏好。"}
+      ]},
+      {"id":"example-method","topic":"观察方法","metadata":{"kind":"fact","sources":[{"document":"城市绿地观察计划.md","section":"2. 观察方法","quote":"在两处社区公园各开展三次观察"}]},"children":[
+        {"id":"example-schedule","topic":"2 处公园 · 各 3 次","note":"覆盖工作日傍晚、周末上午、周末傍晚；每次 30 分钟。"},
+        {"id":"example-fields","topic":"活动、拥挤与设施","note":"补充记录天气和观察时间。"},
+        {"id":"example-privacy","topic":"只记汇总现象","note":"不收集姓名、照片或个人联系方式。"}
+      ]},
+      {"id":"example-process","topic":"整理与核对","metadata":{"kind":"fact","sources":[{"document":"城市绿地观察计划.md","section":"3. 整理与核对","quote":"两名记录者有分歧时，将两种描述都保留为待核对项"}]},"children":[
+        {"id":"example-group","topic":"按公园、时段分组"},
+        {"id":"example-merge","topic":"合并重复，保留编号"},
+        {"id":"example-dispute","topic":"分歧单独待核对"}
+      ]},
+      {"id":"example-output","topic":"输出与溯源","metadata":{"kind":"summary","sources":[{"document":"城市绿地观察计划.md","section":"4. 输出","quote":"形成一张观察主题导图和一份待核对清单"}]},"children":[
+        {"id":"example-deliverables","topic":"主题导图 + 待核对清单"},
+        {"id":"example-evidence","topic":"区分事实、归纳、推测"}
+      ]},
+      {"id":"example-limits","topic":"结论边界","metadata":{"kind":"fact","sources":[{"document":"城市绿地观察计划.md","section":"5. 局限","quote":"不能据此计算整个人群的使用比例或直接评估改造效果"}]},"children":[
+        {"id":"example-bias","topic":"天气与时段影响"},
+        {"id":"example-nocausality","topic":"不推算比例或效果"}
+      ]}
+    ]
+  },
+  "direction": 1, "arrows": [], "summaries": [],
+  "meta": {"sourceDocument":"personal/examples/城市绿地观察计划.md","fictional":true}
+}

@@ -1,0 +1,27 @@
+# Local application state and credentials (all nested directories).
+.mindmap/
+.personal-test-data/
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Dependencies, generated builds, caches and test output.
+node_modules/
+dist/
+coverage/
+.nyc_output/
+test-results/
+playwright-report/
+blob-report/
+.cache/
+*.log
+*.tsbuildinfo
+
+# Local editors and operating-system metadata.
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+Desktop.ini
